@@ -13,6 +13,7 @@ create table if not exists public.site_settings (
   local_delivery_fee numeric not null default 15,
   shipping_fee numeric not null default 35,
   contact_email text default 'sales@uniya.com',
+  hero_image_url text default 'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?q=80&w=1200&auto=format&fit=crop',
   updated_at timestamptz default now()
 );
 
@@ -71,6 +72,8 @@ create table if not exists public.admin_profiles (
   created_at timestamptz default now()
 );
 
+alter table public.site_settings add column if not exists hero_image_url text default 'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?q=80&w=1200&auto=format&fit=crop';
+
 insert into public.site_settings(id) values('main') on conflict(id) do nothing;
 
 insert into public.products(name,origin,price,unit,tag,inventory,description,sort_order) values
@@ -110,6 +113,8 @@ END $$;
 
 drop policy if exists "Public read product images" on storage.objects;
 drop policy if exists "Admin upload product images" on storage.objects;
+drop policy if exists "Admin update product images" on storage.objects;
+drop policy if exists "Admin delete product images" on storage.objects;
 
 create policy "Public read settings" on public.site_settings for select using (true);
 create policy "Admin update settings" on public.site_settings for all using (public.is_admin()) with check (public.is_admin());
@@ -131,6 +136,8 @@ create policy "Admin read admin_profiles" on public.admin_profiles for select us
 
 create policy "Public read product images" on storage.objects for select using (bucket_id = 'product-images');
 create policy "Admin upload product images" on storage.objects for insert to authenticated with check (bucket_id = 'product-images' and public.is_admin());
+create policy "Admin update product images" on storage.objects for update to authenticated using (bucket_id = 'product-images' and public.is_admin()) with check (bucket_id = 'product-images' and public.is_admin());
+create policy "Admin delete product images" on storage.objects for delete to authenticated using (bucket_id = 'product-images' and public.is_admin());
 
 -- AFTER creating a Supabase Auth user, add that user's UUID here:
 -- insert into public.admin_profiles(user_id) values ('PASTE-YOUR-AUTH-USER-UUID-HERE');

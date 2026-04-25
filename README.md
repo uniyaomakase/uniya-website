@@ -85,3 +85,9 @@ Login with the Supabase Auth user you created.
 - Stripe checkout will be v0.5.
 - Delivery routing is preview only. Full route optimization and driver status will be later.
 - Product edits are now saved in Supabase and shared across devices.
+
+
+## v0.4.2 updates
+- Admin > Site Settings: upload/change the main page hero photo.
+- Admin > Products: drag product cards up/down to change website display order. The order is saved to `products.sort_order` in Supabase.
+- `supabase_schema.sql` now includes `hero_image_url`; rerun the SQL in Supabase SQL Editor if your database was created with an older version.
