@@ -1,5 +1,6 @@
--- Uniya v0.4.3 Supabase setup
--- Run this in Supabase > SQL Editor.
+-- Uniya v0.4.3 Supabase setup / repair
+-- Run this in Supabase > SQL Editor. Safe to rerun.
+-- Fixes: duplicate default products, product ordering, product photo delete policy, main page photo field.
 
 create extension if not exists pgcrypto;
 
@@ -28,6 +29,8 @@ create table if not exists public.products (
   inventory int default 0,
   description text default '',
   sort_order int default 999,
+  image_fit text default 'contain',
+  image_zoom int default 100,
   created_at timestamptz default now(),
   updated_at timestamptz default now()
 );
@@ -73,28 +76,45 @@ create table if not exists public.admin_profiles (
 );
 
 alter table public.site_settings add column if not exists hero_image_url text default 'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?q=80&w=1200&auto=format&fit=crop';
+alter table public.products add column if not exists sort_order int default 999;
+alter table public.products add column if not exists image_fit text default 'contain';
+alter table public.products add column if not exists image_zoom int default 100;
 
 insert into public.site_settings(id) values('main') on conflict(id) do nothing;
 
+-- Remove duplicated products created by rerunning older SQL.
+-- Keeps the oldest product row for each identical product name.
+with ranked as (
+  select id, row_number() over (partition by lower(trim(name)) order by created_at asc, id asc) rn
+  from public.products
+)
+delete from public.products p
+using ranked r
+where p.id = r.id and r.rn > 1;
+
+-- Only seed demo products if they do not already exist.
 insert into public.products(name,origin,price,unit,tag,inventory,description,sort_order)
-select v.name,v.origin,v.price,v.unit,v.tag,v.inventory,v.description,v.sort_order
-from (values
-('Premium Japanese Uni Tray','Japan',128,'250g tray','Best Seller',20,'Sweet, creamy omakase-grade sea urchin imported directly from Japan.',1),
-('Bluefin Otoro Block','Japan / Toyosu Market',98,'per pack','Sashimi Grade',15,'Rich fatty tuna belly for DIY sashimi, sushi, or omakase dinner at home.',2),
-('Japanese Ikura','Hokkaido',58,'250g jar','Limited',30,'Bright, savory salmon roe. Perfect for rice bowls and hand rolls.',3)
-) as v(name,origin,price,unit,tag,inventory,description,sort_order)
-where not exists (
-  select 1 from public.products p where lower(trim(p.name)) = lower(trim(v.name))
-);
+select 'Premium Japanese Uni Tray','Japan',128,'250g tray','Best Seller',20,'Sweet, creamy omakase-grade sea urchin imported directly from Japan.',1
+where not exists (select 1 from public.products where lower(trim(name))=lower('Premium Japanese Uni Tray'));
+insert into public.products(name,origin,price,unit,tag,inventory,description,sort_order)
+select 'Bluefin Otoro Block','Japan / Toyosu Market',98,'per pack','Sashimi Grade',15,'Rich fatty tuna belly for DIY sashimi, sushi, or omakase dinner at home.',2
+where not exists (select 1 from public.products where lower(trim(name))=lower('Bluefin Otoro Block'));
+insert into public.products(name,origin,price,unit,tag,inventory,description,sort_order)
+select 'Japanese Ikura','Hokkaido',58,'250g jar','Limited',30,'Bright, savory salmon roe. Perfect for rice bowls and hand rolls.',3
+where not exists (select 1 from public.products where lower(trim(name))=lower('Japanese Ikura'));
 
+-- Seed one demo image per demo product only if no image exists for that product.
 insert into public.product_images(product_id,image_url,sort_order)
-select p.id, 'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?q=80&w=1200&auto=format&fit=crop', 1 from public.products p where p.name='Premium Japanese Uni Tray' and not exists(select 1 from public.product_images i where i.product_id=p.id)
-union all
-select p.id, 'https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?q=80&w=1200&auto=format&fit=crop', 1 from public.products p where p.name='Bluefin Otoro Block' and not exists(select 1 from public.product_images i where i.product_id=p.id)
-union all
-select p.id, 'https://images.unsplash.com/photo-1611143669185-af224c5e3252?q=80&w=1200&auto=format&fit=crop', 1 from public.products p where p.name='Japanese Ikura' and not exists(select 1 from public.product_images i where i.product_id=p.id);
+select p.id, 'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?q=80&w=1200&auto=format&fit=crop', 1
+from public.products p where p.name='Premium Japanese Uni Tray' and not exists(select 1 from public.product_images i where i.product_id=p.id);
+insert into public.product_images(product_id,image_url,sort_order)
+select p.id, 'https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?q=80&w=1200&auto=format&fit=crop', 1
+from public.products p where p.name='Bluefin Otoro Block' and not exists(select 1 from public.product_images i where i.product_id=p.id);
+insert into public.product_images(product_id,image_url,sort_order)
+select p.id, 'https://images.unsplash.com/photo-1611143669185-af224c5e3252?q=80&w=1200&auto=format&fit=crop', 1
+from public.products p where p.name='Japanese Ikura' and not exists(select 1 from public.product_images i where i.product_id=p.id);
 
--- Storage bucket for product image uploads
+-- Storage bucket for product and hero image uploads.
 insert into storage.buckets (id, name, public) values ('product-images', 'product-images', true)
 on conflict (id) do update set public = true;
 
@@ -109,7 +129,6 @@ create or replace function public.is_admin() returns boolean language sql securi
   select exists(select 1 from public.admin_profiles where user_id = auth.uid());
 $$;
 
--- Drop old policies if rerunning
 DO $$ DECLARE r record; BEGIN
   FOR r IN (SELECT schemaname, tablename, policyname FROM pg_policies WHERE schemaname='public' AND tablename IN ('site_settings','products','product_images','orders','order_items','admin_profiles')) LOOP
     EXECUTE format('DROP POLICY IF EXISTS %I ON %I.%I', r.policyname, r.schemaname, r.tablename);
