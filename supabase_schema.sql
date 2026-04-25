@@ -1,4 +1,4 @@
--- Uniya v0.4 Supabase setup
+-- Uniya v0.4.3 Supabase setup
 -- Run this in Supabase > SQL Editor.
 
 create extension if not exists pgcrypto;
@@ -76,11 +76,16 @@ alter table public.site_settings add column if not exists hero_image_url text de
 
 insert into public.site_settings(id) values('main') on conflict(id) do nothing;
 
-insert into public.products(name,origin,price,unit,tag,inventory,description,sort_order) values
+insert into public.products(name,origin,price,unit,tag,inventory,description,sort_order)
+select v.name,v.origin,v.price,v.unit,v.tag,v.inventory,v.description,v.sort_order
+from (values
 ('Premium Japanese Uni Tray','Japan',128,'250g tray','Best Seller',20,'Sweet, creamy omakase-grade sea urchin imported directly from Japan.',1),
 ('Bluefin Otoro Block','Japan / Toyosu Market',98,'per pack','Sashimi Grade',15,'Rich fatty tuna belly for DIY sashimi, sushi, or omakase dinner at home.',2),
 ('Japanese Ikura','Hokkaido',58,'250g jar','Limited',30,'Bright, savory salmon roe. Perfect for rice bowls and hand rolls.',3)
-on conflict do nothing;
+) as v(name,origin,price,unit,tag,inventory,description,sort_order)
+where not exists (
+  select 1 from public.products p where lower(trim(p.name)) = lower(trim(v.name))
+);
 
 insert into public.product_images(product_id,image_url,sort_order)
 select p.id, 'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?q=80&w=1200&auto=format&fit=crop', 1 from public.products p where p.name='Premium Japanese Uni Tray' and not exists(select 1 from public.product_images i where i.product_id=p.id)
