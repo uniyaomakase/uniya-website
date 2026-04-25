@@ -1,81 +1,87 @@
-# Uniya Website v0.3
+# Uniya Website v0.4
 
-Custom starter website for Uniya — Bring Omakase to Home.
+v0.4 upgrades the site from browser-only local storage to a real Supabase database.
 
-## Included
-- Customer homepage
-- Product catalogue
+## What is included
+
+- Public homepage and product catalogue
 - Cart and order form
-- Fixed delivery / ship-out days: Wednesday and Saturday
-- Local delivery and cold shipping option
-- Admin/builder page
+- Fixed Wednesday / Saturday delivery or ship-out dates
+- Local delivery + cold shipping
+- Supabase product database
+- Supabase order database
+- Admin login through Supabase Auth
 - Product add/edit/delete
-- Product image URL support
-- Site text/pricing/settings editor
-- Demo order saving
-- Export orders CSV
-- Export supplier purchase list CSV
+- Product image upload through Supabase Storage
+- Site settings editor
+- Order CSV export
+- Supplier list CSV export
 - Driver route preview with Google Maps links
-- Stripe checkout URL placeholder
 
-## Run locally
+## 1. Create Supabase project
+
+1. Go to Supabase and create a new project.
+2. Open SQL Editor.
+3. Copy and run all SQL from `supabase_schema.sql`.
+
+## 2. Create admin user
+
+1. In Supabase, go to Authentication > Users.
+2. Click Add user.
+3. Create your admin email and password.
+4. Copy the user's UUID.
+5. Go back to SQL Editor and run:
+
+```sql
+insert into public.admin_profiles(user_id)
+values ('PASTE-YOUR-AUTH-USER-UUID-HERE');
+```
+
+Only users in `admin_profiles` can edit products/settings and view orders.
+
+## 3. Add Vercel Environment Variables
+
+In Vercel project:
+
+Settings > Environment Variables
+
+Add:
+
+```text
+VITE_SUPABASE_URL=https://YOUR_PROJECT_ID.supabase.co
+VITE_SUPABASE_ANON_KEY=YOUR_SUPABASE_ANON_KEY
+```
+
+You can find both in Supabase:
+
+Project Settings > API
+
+Use the Project URL and anon public key.
+
+## 4. Deploy
+
+Upload this full v0.4 folder to GitHub, replacing the v0.3 files, then Vercel will redeploy automatically.
+
+Or run locally:
+
 ```bash
 npm install
 npm run dev
 ```
-Open the URL shown in Terminal, usually:
-```bash
-http://localhost:5173
+
+## 5. Admin page
+
+Open:
+
+```text
+https://your-vercel-site.vercel.app/#admin
 ```
 
-## Admin page
-Click Admin in the header, or go to:
-```bash
-/#admin
-```
-Demo password:
-```bash
-123456
-```
-Change this before real launch.
+Login with the Supabase Auth user you created.
 
-## Build for hosting
-```bash
-npm run build
-```
-The static website will be generated in:
-```bash
-dist/
-```
+## Important notes
 
-## Deploy recommendation
-Upload the project to GitHub and connect it to Vercel.
-Vercel build command:
-```bash
-npm run build
-```
-Vercel output directory:
-```bash
-dist
-```
-
-## Important limitation in v0.3
-This version stores products/orders in browser localStorage for testing only.
-That means data is saved on the same browser/computer only.
-
-Next version should connect to Supabase or another database so admin changes and orders are shared across all computers.
-
-## Next versions
-v0.4:
-- Real database with Supabase
-- Admin authentication
-- Product image upload instead of image URL
-
-v0.5:
-- Real Stripe checkout session
-- Paid/unpaid order status
-
-v0.6:
-- Delivery route manager
-- Driver mobile page
-- SMS templates
+- v0.4 does not process payment yet.
+- Stripe checkout will be v0.5.
+- Delivery routing is preview only. Full route optimization and driver status will be later.
+- Product edits are now saved in Supabase and shared across devices.
