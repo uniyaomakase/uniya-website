@@ -1,6 +1,6 @@
-# Uniya Website v0.5.1
+# Uniya Website v0.5.3
 
-v0.5.1 upgrades the site from browser-only local storage to a real Supabase database.
+v0.5.3 upgrades the site from browser-only local storage to a real Supabase database.
 
 ## What is included
 
@@ -60,7 +60,7 @@ Use the Project URL and anon public key.
 
 ## 4. Deploy
 
-Upload this full v0.5.1 folder to GitHub, replacing the v0.3 files, then Vercel will redeploy automatically.
+Upload this full v0.5.3 folder to GitHub, replacing the v0.3 files, then Vercel will redeploy automatically.
 
 Or run locally:
 
@@ -81,19 +81,19 @@ Login with the Supabase Auth user you created.
 
 ## Important notes
 
-- v0.5.1 does not process payment yet.
+- v0.5.3 does not process payment yet.
 - Stripe checkout will be v0.5.
 - Delivery routing is preview only. Full route optimization and driver status will be later.
 - Product edits are now saved in Supabase and shared across devices.
 
 
-## v0.5.1.2 updates
+## v0.5.3.2 updates
 - Admin > Site Settings: upload/change the main page hero photo.
 - Admin > Products: drag product cards up/down to change website display order. The order is saved to `products.sort_order` in Supabase.
 - `supabase_schema.sql` now includes `hero_image_url`; rerun the SQL in Supabase SQL Editor if your database was created with an older version.
 
 
-## v0.5.1 changes
+## v0.5.3 changes
 - Fixed CSV import: visible status, UTF-8/BOM handling, success/error alerts.
 - Added paste box for Airmart __NEXT_DATA__ so you do not need to create a file.
 - Added Airmart URL fetch attempt; if Airmart blocks browser fetch, use the paste/upload method.
