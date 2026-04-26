@@ -54,3 +54,13 @@
   .responsiveShopTools .mobileCategories{display:grid!important}
   .responsiveShopTools .categoryLangBar{margin:8px 0}.responsiveShopTools .categoryCompactRow{margin-top:4px}
 }
+
+/* v0.6.3 reports, route planning, SMS */
+.reportCards{display:grid;grid-template-columns:repeat(4,minmax(140px,1fr));gap:12px;margin:12px 0 18px}
+.reportCards>div{background:#fff;border:1px solid #e6e8f2;border-radius:14px;padding:14px;box-shadow:0 6px 20px rgba(20,24,80,.06)}
+.reportCards b{display:block;font-size:22px;color:#1d2088}.reportCards span{font-size:12px;color:#6b7280}
+.routeControls{display:grid;grid-template-columns:220px 1fr;gap:14px;align-items:end}.routeControls select{width:100%}
+.routeGroup h3{display:flex;align-items:center;gap:8px;margin:0 0 12px}.routeGroup small{color:#777;font-weight:500}
+.enhancedRouteStop{align-items:flex-start;border:1px solid #eef0f6;border-radius:14px;margin:10px 0;padding:12px;background:#fafbff}
+.routeNum{min-width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#1d2088;color:white;font-weight:700}.routeMain{flex:1}.routeMain p{margin:4px 0}.routeActions{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}.routeActions select,.routeActions input{height:38px;border:1px solid #d8dbe8;border-radius:10px;padding:0 10px}.routeActions input{min-width:190px}.routeActions button{height:38px;border-radius:10px;border:1px solid #d8dbe8;background:#fff;display:inline-flex;align-items:center;gap:6px;padding:0 10px;cursor:pointer}.smsModal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px}.smsModal>div{background:white;border-radius:18px;max-width:560px;width:100%;padding:22px;position:relative;box-shadow:0 20px 70px rgba(0,0,0,.25)}.smsModal textarea{width:100%;border:1px solid #d8dbe8;border-radius:12px;padding:12px;margin:10px 0;font-size:15px}.closeBtn{position:absolute;right:14px;top:14px;border:0;background:#f1f3f8;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+@media(max-width:800px){.reportCards{grid-template-columns:repeat(2,1fr)}.routeControls{grid-template-columns:1fr}.enhancedRouteStop{display:block}.routeNum{margin-bottom:8px}.routeActions{display:grid;grid-template-columns:1fr}.routeActions input,.routeActions select,.routeActions button{width:100%}}
