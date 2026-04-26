@@ -7,3 +7,13 @@
 .photo{background:#0f172a;overflow:hidden}.photo img{transition:opacity .25s ease,transform .25s ease;transform-origin:center center}.dots{position:absolute;left:0;right:0;bottom:12px;display:flex;justify-content:center;gap:7px}.dots button{width:8px;height:8px;border-radius:999px;border:1px solid rgba(255,255,255,.8);background:rgba(255,255,255,.35);padding:0}.dots button.on{background:#facc15;border-color:#facc15}.editGrid label select,.editGrid label input{margin-top:8px}.thumbBox img{object-fit:contain;background:#0f172a}
 /* v0.4.5 catalogue expansion */
 .catSelect{width:220px;align-self:center}.compactGrid{grid-template-columns:repeat(4,1fr);gap:18px}.featureGrid{max-width:1240px;margin:auto;padding:0 34px;display:grid;grid-template-columns:1fr;gap:24px}.productWide{display:grid;grid-template-columns:38% 1fr}.productWide .photo{height:310px}.metaRow{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}.metaRow span{display:inline-flex;gap:5px;align-items:center;color:#fde68a;background:rgba(250,204,21,.12);border:1px solid rgba(250,204,21,.18);border-radius:999px;padding:6px 10px;font-size:12px}.bundleBox{border:1px solid rgba(250,204,21,.25);background:rgba(250,204,21,.08);border-radius:14px;padding:10px;margin:10px 0;color:#fde68a}.bundleBox div{display:flex;justify-content:space-between;color:#e2e8f0;font-size:13px;margin-top:6px}.bundleAdmin{grid-column:1/-1;border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:14px;background:rgba(255,255,255,.04)}.bundleAdmin>button,.bundleEdit button{border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.08);color:white;border-radius:12px;padding:10px;display:inline-flex;gap:8px;align-items:center}.bundleEdit{display:grid;grid-template-columns:1.2fr 1.2fr .7fr auto;gap:8px;margin-top:10px}.editGrid label .mini{margin-top:8px}.productBody h3{min-height:48px}@media(max-width:1100px){.compactGrid{grid-template-columns:repeat(3,1fr)}}@media(max-width:900px){.compactGrid{grid-template-columns:1fr}.productWide{display:block}.productWide .photo{height:235px}.bundleEdit{grid-template-columns:1fr}.catSelect{width:100%}}
+
+/* v0.4.6 stock and reorder-handle improvements */
+.product{position:relative}
+.product.soldOut{opacity:.72}
+.soldOutBadge{position:absolute;top:14px;left:14px;z-index:5;background:#111;color:#fff;border-radius:999px;padding:8px 13px;font-weight:900;letter-spacing:.04em}
+.qty button:disabled{opacity:.45;cursor:not-allowed}
+.dragHandle{display:inline-flex;align-items:center;justify-content:center;cursor:grab;margin-right:8px;padding:4px;border-radius:8px;background:#f4f4f4;color:#333;user-select:none}
+.dragHandle:active{cursor:grabbing}
+.draggableCard{user-select:text}
+.draggableCard input,.draggableCard textarea{user-select:text}
