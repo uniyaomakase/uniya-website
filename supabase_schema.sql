@@ -1,4 +1,4 @@
--- Uniya v0.4.3 Supabase setup / repair
+-- Uniya v0.4.5 Supabase setup / repair
 -- Run this in Supabase > SQL Editor. Safe to rerun.
 -- Fixes: duplicate default products, product ordering, product photo delete policy, main page photo field.
 
@@ -23,10 +23,15 @@ create table if not exists public.products (
   active boolean not null default true,
   name text not null,
   origin text default '',
+  category text default '',
   price numeric not null default 0,
   unit text default '',
   tag text default '',
   inventory int default 0,
+  inventory_type text default 'number',
+  featured boolean not null default false,
+  bundle_enabled boolean not null default false,
+  bundle_items jsonb not null default '[]'::jsonb,
   description text default '',
   sort_order int default 999,
   image_fit text default 'contain',
@@ -79,6 +84,11 @@ alter table public.site_settings add column if not exists hero_image_url text de
 alter table public.products add column if not exists sort_order int default 999;
 alter table public.products add column if not exists image_fit text default 'contain';
 alter table public.products add column if not exists image_zoom int default 100;
+alter table public.products add column if not exists category text default '';
+alter table public.products add column if not exists inventory_type text default 'number';
+alter table public.products add column if not exists featured boolean not null default false;
+alter table public.products add column if not exists bundle_enabled boolean not null default false;
+alter table public.products add column if not exists bundle_items jsonb not null default '[]'::jsonb;
 
 insert into public.site_settings(id) values('main') on conflict(id) do nothing;
 
@@ -165,3 +175,5 @@ create policy "Admin delete product images" on storage.objects for delete to aut
 
 -- AFTER creating a Supabase Auth user, add that user's UUID here:
 -- insert into public.admin_profiles(user_id) values ('PASTE-YOUR-AUTH-USER-UUID-HERE');
+
+create unique index if not exists products_unique_name_lower_idx on public.products (lower(trim(name)));
