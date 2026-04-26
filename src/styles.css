@@ -17,3 +17,13 @@
 .dragHandle:active{cursor:grabbing}
 .draggableCard{user-select:text}
 .draggableCard input,.draggableCard textarea{user-select:text}
+
+/* v0.5.4 shopper UI: clean cards, category chips, search, expandable details */
+.productHeader{padding-bottom:10px}
+.shopTools{max-width:1240px;margin:0 auto 24px;padding:0 34px;position:sticky;top:78px;z-index:8;background:linear-gradient(180deg,rgba(2,6,23,.98),rgba(2,6,23,.86));backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08)}
+.searchBox{display:flex;align-items:center;gap:10px;border:1px solid rgba(255,255,255,.14);background:#0f172a;border-radius:18px;padding:0 14px;margin-bottom:14px;box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.searchBox svg{color:#fcd34d;flex:0 0 auto}.searchBox input{border:0;background:transparent;padding:16px 4px;border-radius:0}
+.categoryChips{display:flex;gap:10px;overflow-x:auto;padding:4px 0 16px;scrollbar-width:thin}.categoryChips button{border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.06);color:white;border-radius:999px;padding:9px 13px;white-space:nowrap;display:inline-flex;gap:8px;align-items:center}.categoryChips button small{color:#94a3b8;background:rgba(255,255,255,.08);border-radius:999px;padding:2px 7px}.categoryChips button.on{background:#facc15;color:#0f172a;border-color:#facc15;font-weight:900}.categoryChips button.on small{background:rgba(15,23,42,.15);color:#0f172a}
+.subhead{max-width:1240px;margin:22px auto 12px;padding:0 34px;color:#fde68a;letter-spacing:.06em}.noResults{max-width:1240px;margin:24px auto;padding:30px 34px;border:1px dashed rgba(255,255,255,.18);border-radius:24px;color:#cbd5e1}.noResults h3{color:white;margin-top:0}
+.productBody h3{min-height:0;margin:10px 0 12px;line-height:1.25;font-size:20px}.product p{display:none}.productDescription{border-top:1px solid rgba(255,255,255,.1);margin:12px 0 0;padding-top:12px;max-height:300px;overflow:auto}.productDescription p{display:block;color:#cbd5e1;line-height:1.65;margin:0;white-space:pre-wrap;font-size:14px}.detailsBtn{border:1px solid rgba(250,204,21,.32);background:rgba(250,204,21,.1);color:#fde68a;border-radius:999px;padding:8px 12px;margin:4px 0 10px;display:inline-flex;font-weight:800}.productBody small{display:inline-block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:rgba(250,204,21,.09);border:1px solid rgba(250,204,21,.16);border-radius:999px;padding:5px 9px}.product .row{margin-top:14px}.productWide .productBody h3{font-size:28px}
+@media(max-width:900px){.shopTools{top:0;padding:0 16px}.sectionTitle.productHeader{padding-left:16px;padding-right:16px}.subhead{padding-left:16px;padding-right:16px}.productBody h3{font-size:18px}.productWide .productBody h3{font-size:20px}}
